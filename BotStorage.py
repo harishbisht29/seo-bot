@@ -1,6 +1,6 @@
 import json
 
-class TwitterStorage:
+class BotStorage:
 
     def __init__(self, config):
         try:
@@ -18,6 +18,8 @@ class TwitterStorage:
             f= open(config['filename'],'r')
             self.data= json.load(f)
             f.close()
+    def postExists(self, post_id):
+        return any(d['post_id']== post_id for d in self.data)
     
     def createUnit(self,post_id):
         self.data.append({
@@ -25,6 +27,7 @@ class TwitterStorage:
             "since_id":self.config['default_since_id'],
             "replied_users":self.config['default_replied_users']
             })
+        self.save()
     def showData(self):
         print(type(self.data))
         print(self.data)
@@ -47,12 +50,12 @@ class TwitterStorage:
         for d in self.data:
             if d['post_id']== post_id:
                 d['since_id']= since_id
-    
+        self.save()
     def setRepliedUser(self,post_id, replied_users):
         for d in self.data:
             if d['post_id']== post_id:
                 d['replied_users'].extend(replied_users)
-
+        self.save()
     def save(self):
         with open(self.config['filename'], 'w') as f:
             json.dump(self.data, f, indent=4)
@@ -60,12 +63,18 @@ class TwitterStorage:
 if __name__ == '__main__':
     config= {}
     config['filename']= 'data.json'
-    s= TwitterStorage(config)
+    s= BotStorage(config)
+    # s.createUnit(5)
+    # s.save()
+    # print(s.getRepliedUsers(2))
+    # s.setRepliedUser(2,['Shivam','Nitin'])
+    s.save()
+    # s.showData()
     # print(s.getRepliedUsers(3))
     # print(s.getSinceId(3))
-    print(s.setSinceId(3,7))
+    # print(s.setSinceId(3,7))
     # print(s.setRepliedUser(3,['shivam','mattoo','umangkoul']))
-    s.createUnit(5)
-    s.showData()
-    s.save()
+    # s.createUnit(5)
+    # s.showData()
+    # s.save()
 
