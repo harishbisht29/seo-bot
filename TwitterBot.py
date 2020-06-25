@@ -4,6 +4,7 @@ from Bot import Bot
 import my_credentials as credentials
 import requests
 import json
+import sys
 
 class TwitterBot(Bot):
 
@@ -44,51 +45,55 @@ class TwitterBot(Bot):
     
     def reply_to_tweet(self, id, reply):
         self.api.update_status(
-            status = 'reply ',
+            status = reply,
             in_reply_to_status_id = id,
             auto_populate_reply_metadata=True)
+    
 
 
 if __name__ == '__main__':
-    print("Inside Twitter Bot Main ")
+    print("Inside Twitter Bot Main Method")
+    # Hitting search keyword api endpoint
     res= requests.get("https://www.codethemall.com/api/keyword-list?format=json")
     search_keywords = json.loads(res.text)
-
+    # Hitting posts detail api endpoint
     res= requests.get("https://www.codethemall.com/api/post-list?format=json")
     posts= json.loads(res.text)
-
-
+    # Configuring BotStorage class
     config= {}
     config['filename']= 'data.json'
     storage= BotStorage(config)
+    # Creating twitter bot instance
     tBot= TwitterBot()
-
+    # looping through all the search keywords 
     for k in search_keywords:
+        # fetch postid and postdetail for a search keywor
         post_id= k['post']
         post_details=[ p  for p in posts if p['id']== post_id ][0]
-
-        print(post_details)
-
+        # If there is not entry for a post in BotStroage then create one.
         if not storage.postExists(post_id):
             print("Creating post unit", post_id)
             storage.createUnit(post_id)
-
+        # Get since_id for the post from BotStorage class.
         since_id= storage.getSinceId(post_id)
+        # Getting tweets which match the search keywords and falls after since_id.
         matched_tweets= tBot.get_articles(k['keyword'], since_id)
+        # Reverse the list so that it is sorted based on time. Oldest->Newest tweets.
         matched_tweets.reverse()
-
+        # looping through all the matched tweets
         for tweet in matched_tweets:
-            print("Bot looking into ",tweet)
+            # Get the list of users who have already been notified. So eliminated dupilcate
+            # notify.
             replied_users= storage.getRepliedUsers(post_id)
+            # Get user who tweeted
             u= tweet['user_name']
-            if u in replied_users:
-                print("Already shared with user")
-            else:
-                print("replying user")
-                print(post_details['title'],"->",k['url'] )
+            # For new user reply to user.
+            if u not in replied_users:
+                url= tBot.get_source_url(k['url'])
+                reply= "This can help you 😀- "+post_details['title']+"->"+url
+                tBot.reply_to_tweet(tweet['tweet_id'], reply)
                 storage.setRepliedUser(post_id,[u])
-            storage.setSinceId(post_id, tweet['tweet_id'])
-        
 
-        # print(post_id, replied_users, since_id)    
+            storage.setSinceId(post_id, tweet['tweet_id'])
+
             
