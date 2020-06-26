@@ -89,10 +89,15 @@ if __name__ == '__main__':
             u= tweet['user_name']
             # For new user reply to user.
             if u not in replied_users:
+                #
+                print("replying", u)
                 url= tBot.get_source_url(k['url'])
                 reply= "This can help you 😀- "+post_details['title']+"->"+url
                 tBot.reply_to_tweet(tweet['tweet_id'], reply)
                 storage.setRepliedUser(post_id,[u])
+                # sys.exit(0)
+            else:
+                print("Skipping",u, "has already been informed")
 
             storage.setSinceId(post_id, tweet['tweet_id'])
 
