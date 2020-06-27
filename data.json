@@ -1,22 +1,12 @@
 [
     {
+        "post_id": 2,
+        "since_id": 1276603706230833152,
         "replied_users": [
-            "brettsky",
-            "OctoPrint3D",
-            "Mr_LittleWood",
-            "0xdade",
-            "tonka_2000",
-            "nodeQuotesBot",
-            "dnsmichi",
-            "Underline_API",
-            "developersbot",
             "PythonTucson",
             "golangio",
-            "cool_golang",
             "brianskjerven",
-            "gowthamsadasiva",
             "Kiview",
-            "MeneDev",
             "ITNEXT_io",
             "mxanathar",
             "_jolvera",
@@ -25,29 +15,14 @@
             "arch_update_bot",
             "JeffSpies",
             "mikehelmick",
-            "ProjectJupyter",
-            "cool_python",
-            "shi_sha_",
-            "nlognbot",
-            "theInfernobot",
             "ArranTate",
-            "thebotbuddy",
-            "BlkHwk0ps",
-            "BotKoshur",
             "pythonbytes",
-            "brianokken",
-            "mkennedy",
-            "WeLivetoServe",
-            "HEPfeickert",
             "greatnewsyu",
             "pawgofgoodlivin",
-            "romanzolotarev",
-            "TTheodosios",
-            "dputerity",
             "danilobraband",
-            "sci_vision"
-        ],
-        "post_id": 2,
-        "since_id": 1276544608000978945
+            "sci_vision",
+            "starcoder11",
+            "pypackages"
+        ]
     }
 ]

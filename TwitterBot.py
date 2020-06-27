@@ -28,15 +28,17 @@ class TwitterBot(Bot):
             rpp=100,
             since_id= since_id
             ).items():
-            # print(type(tweet))
-            # print(tweet.id)
-            # print(tweet.text)
-            # print(tweet.user.screen_name, tweet.created_at, tweet.id, tweet.text)
-            matched_tweets.append({'user_name':tweet.user.screen_name,
-            'tweet_id':tweet.id,
-            'text':tweet.text,
-            'created_at':tweet.created_at})
-            # print()
+            
+            try:
+                # if its a retweet don't count it
+                tweet.retweeted_status
+            except:
+                
+                matched_tweets.append({'user_name':tweet.user.screen_name,
+                'tweet_id':tweet.id,
+                'text':tweet.text,
+                'created_at':tweet.created_at})
+
         return matched_tweets
 
     def post_on_account(self, post):
@@ -52,7 +54,7 @@ class TwitterBot(Bot):
 
 
 if __name__ == '__main__':
-    print("Inside Twitter Bot Main Method")
+    print("-----------Inside Twitter Bot Main Method---------------")
     # Hitting search keyword api endpoint
     res= requests.get("https://www.codethemall.com/api/keyword-list?format=json")
     search_keywords = json.loads(res.text)
@@ -81,21 +83,26 @@ if __name__ == '__main__':
         # Reverse the list so that it is sorted based on time. Oldest->Newest tweets.
         matched_tweets.reverse()
         # looping through all the matched tweets
+        if len(matched_tweets) == 0:
+            print("-------No tweets found.----------")
         for tweet in matched_tweets:
             # Get the list of users who have already been notified. So eliminated dupilcate
             # notify.
             replied_users= storage.getRepliedUsers(post_id)
+            # replied_users.append('codethemall')
             # Get user who tweeted
             u= tweet['user_name']
             # For new user reply to user.
+            print(u, "tweet->", tweet['text'])
+            print("--------------------------------------")
+
             if u not in replied_users:
-                #
                 print("replying", u)
                 url= tBot.get_source_url(k['url'])
                 reply= "This can help you 😀- "+post_details['title']+"->"+url
                 tBot.reply_to_tweet(tweet['tweet_id'], reply)
                 storage.setRepliedUser(post_id,[u])
-                # sys.exit(0)
+    
             else:
                 print("Skipping",u, "has already been informed")
 
