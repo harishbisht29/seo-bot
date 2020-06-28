@@ -99,7 +99,7 @@ if __name__ == '__main__':
             if u not in replied_users:
                 print("replying", u)
                 url= tBot.get_source_url(k['url'])
-                reply= "This can help you 😀- "+post_details['title']+"->"+url
+                reply= "Check this out 😀- "+post_details['title']+"->"+url
                 tBot.reply_to_tweet(tweet['tweet_id'], reply)
                 storage.setRepliedUser(post_id,[u])
     
